@@ -14,10 +14,11 @@ struct RobotCount
 
 enum class EMapStatus {
 	OK,
-	NOT_MAP,
 	INVALID_PATH,
-	INVALID_STATUS,
-	WRONG_LENGTH_ROWS
+	INVALID_STATUS,//default
+	INVALID_FORMAT,
+	WRONG_LENGTH_ROWS,
+	INVALID_EXTENCION_FILE
 };
 
 class FNavigationRobot
@@ -26,8 +27,14 @@ class FNavigationRobot
 public:
 	//Constructor
 	FNavigationRobot();
+	EMapStatus checkMapValidity(FString) const;
+	EMapStatus checkPathValidity(FString) const;
 
 private:
 	FString map;
+	bool isMap(FString) const;
+	bool isLengthValid(FString) const;
+	bool isValidExtencion(FString) const;
+	bool isPathFile(FString) const;
 
 };

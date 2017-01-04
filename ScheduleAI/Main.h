@@ -2,10 +2,10 @@
 
 using FText = std::string;
 
-void WelcomeGame();
+void welcomeGame();
 
-void PlaySolution();
+void playSolution();
 
-FText GetValidMap();
+FText getValidMap();
 
-bool AskToRunSolutionAgain();
+bool askToRunSolutionAgain();
