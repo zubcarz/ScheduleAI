@@ -1,22 +1,18 @@
 #pragma once
 
-#include <iostream>
-#include <string>
 #include "main.h"
-#include "FNavigationRobot.h"
-
-using FText = std::string;
-using int32 = int;
 
 FNavigationRobot BCNavigation;
 
 int32 main()
 {
+
+
 	do {
 		welcomeGame(); 
 		playSolution();
 	} while (askToRunSolutionAgain());
-
+	
 	return 0; //exit game
 }
 
@@ -34,7 +30,7 @@ void playSolution()
 
 FText getValidMap()
 {
-	FText pathFlieMap = "";
+	FText pathFileMap = "";
 
 	//Check Valid Map
 	EMapStatus statusMap = EMapStatus::INVALID_STATUS; // status by default
@@ -44,28 +40,63 @@ FText getValidMap()
 		EMapStatus statusPath = EMapStatus::INVALID_STATUS;
 		do {
 			std::cout << " Enter path file to valid Map :";
-			getline(std::cin, pathFlieMap);
-			statusPath = BCNavigation.checkPathValidity(pathFlieMap);
+			getline(std::cin, pathFileMap);
+			statusPath = BCNavigation.checkPathValidity(pathFileMap);
 			switch (statusPath)
 			{
 				case EMapStatus::INVALID_PATH:
-					std::cout << " Please enter a Path File Valid";
+					std::cout << " !!Error!!  Path File is invalid";
 					break;
 				case EMapStatus::INVALID_EXTENCION_FILE:
-					std::cout << " Yor extencion file is not valid";
+					std::cout << " !!Error!!  Your extencion file is not valid";
 					break;
 				default:
 					std::cout << " Is Valid Path";
 					break;
 			}
-			std::cout << std::endl << std::endl;
-		} while (statusPath != EMapStatus::OK);
-
-		statusMap = BCNavigation.checkMapValidity(pathFlieMap);
+			std::cout << std::endl;
 	
+		} while (statusPath != EMapStatus::OK);
+		
+		FString document = readText(pathFileMap);
+		statusMap = BCNavigation.checkMapValidity(document);
+
+		switch (statusMap)
+		{
+		case EMapStatus::INVALID_FORMAT:
+			std::cout << "  !!Error!! Map contains invalid characters ";
+			break;
+		case EMapStatus::WRONG_LENGTH_ROWS:
+			std::cout << " !!Error!! The map should be have rows of the same size";
+			break;
+		default:
+			std::cout << " Is Valid Map";
+			break;
+		}
+
+		std::cout << std::endl << std::endl;
 	} while (statusMap != EMapStatus :: OK);
 	std::cout << std::endl;
 	return FText();
+}
+
+FText readText(FText path)
+{
+
+	std :: ifstream mapFile;
+	mapFile.open(path);
+	FString document;
+	if (mapFile.is_open()) {
+		while (!mapFile.eof()) {
+			//write text in var
+			FString line;
+			getline(mapFile, line);
+			document = document + line ;
+		}
+	}
+	
+	mapFile.close();
+	return document;
 }
 
 bool askToRunSolutionAgain()

@@ -1,9 +1,18 @@
 #pragma once
 
 #include <string>
+#include <map>
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <map>
+
+#define TMap std::map
 
 using FString = std::string;
 using int32 = int;
+
 
 struct RobotCount
 {
@@ -14,11 +23,14 @@ struct RobotCount
 
 enum class EMapStatus {
 	OK,
-	INVALID_PATH,
+	INVALID_PATH,//Path Valid
 	INVALID_STATUS,//default
-	INVALID_FORMAT,
-	WRONG_LENGTH_ROWS,
-	INVALID_EXTENCION_FILE
+	INVALID_FORMAT,//Not Contain characters Valid
+	NOT_CONTAIN_ONE_START, // Not Contain always one start
+	NOT_CONTAIN_DELIVERY, // Not delivery poinst
+	NOT_CONTAIN_PAKAGE, // No pakages for delivery
+	WRONG_LENGTH_ROWS,//Row length valid
+	INVALID_EXTENCION_FILE// Extencion equals txt
 };
 
 class FNavigationRobot
@@ -32,9 +44,10 @@ public:
 
 private:
 	FString map;
-	bool isMap(FString) const;
+	TMap <char, bool> validCharacters;//List Character Valid
+
 	bool isLengthValid(FString) const;
 	bool isValidExtencion(FString) const;
 	bool isPathFile(FString) const;
-
+	bool isValidFormatMap(FString) const;
 };
