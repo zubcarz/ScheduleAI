@@ -69,6 +69,15 @@ FText getValidMap()
 		case EMapStatus::WRONG_LENGTH_ROWS:
 			std::cout << " !!Error!! The map should be have rows of the same size";
 			break;
+		case EMapStatus::NOT_CONTAIN_DELIVERY:
+			std::cout << " !!Error!! The map must have at least one delivery point";
+			break;
+		case EMapStatus::NOT_CONTAIN_PACKAGE:
+			std::cout << " !!Error!! The map must have at least one package";
+			break;
+		case EMapStatus::INVALID_POINT_START:
+			std::cout << " !!Error!! The map does not contain a starting point or contains more than one";
+			break;
 		default:
 			std::cout << " Is Valid Map";
 			break;

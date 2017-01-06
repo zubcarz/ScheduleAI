@@ -22,6 +22,18 @@ EMapStatus FNavigationRobot::checkMapValidity(FString mapDocument) const
 	{
 		return EMapStatus::WRONG_LENGTH_ROWS;
 	}
+	else if (!isContainDelivery(mapDocument))
+	{
+		return EMapStatus::NOT_CONTAIN_DELIVERY;
+	}
+	else if (!isContainPackage(mapDocument))
+	{
+		return EMapStatus::NOT_CONTAIN_PACKAGE;
+	}
+	else if (!isValidStart(mapDocument))
+	{
+		return EMapStatus::INVALID_POINT_START;
+	}
 	else
 	{
 		return EMapStatus::OK;
@@ -52,7 +64,32 @@ bool FNavigationRobot::isValidFormatMap(FString mapDocument) const
 		if (!character[letter] && !isdigit((int)(letter))) {
 			return false;
 		}
+
+			/*switch (letter)
+			{
+				case 'o':
+					mapCount.empty++;
+					break;
+				case 'S':
+					mapCount.start++;
+					break;
+				case 'X':
+					mapCount.wall++;
+					break;
+				case 'E':
+					mapCount.delivery++;
+					break;
+				case ',':
+					//ignore
+					break;
+				default:
+					mapCount.package++;
+					break;
+			}*/
+		
 	}
+
+
 	return true;
 }
 
@@ -89,5 +126,34 @@ bool FNavigationRobot::isValidExtencion(FString pathFile) const
 		return true;
 	}
 	
+	return false;
+}
+
+bool FNavigationRobot::isContainDelivery(FString mapDocument) const
+{
+	if (mapDocument.find('E') != std::string::npos)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool FNavigationRobot::isValidStart(FString mapDocument) const
+{
+	int32 countStart = std::count(mapDocument.begin(), mapDocument.end(), 'S');
+	if (countStart != 1)
+	{
+		return false;
+	}
+	return true;
+}
+
+bool FNavigationRobot::isContainPackage(FString mapDocument) const
+{
+	int countPackage = std::count_if(mapDocument.begin(), mapDocument.end(), [](char i) {return isdigit((int)i);});
+	if (countPackage > 0)
+	{
+		return true;
+	}
 	return false;
 }
