@@ -6,11 +6,10 @@ FNavigationRobot BCNavigation;
 
 int32 main()
 {
-
-
 	do {
 		welcomeGame(); 
 		playSolution();
+		BCNavigation.reset();
 	} while (askToRunSolutionAgain());
 	
 	return 0; //exit game
@@ -25,13 +24,28 @@ void welcomeGame()
 
 void playSolution()
 {
-	getValidMap();
+	//Cycle
+	FText validMap =  getValidMap();
+	FMatriz navigationMap = BCNavigation.builderNavMap();
+	printInfoMap();
+	printInfoNavigationMap(navigationMap);
+	//create grafo
+	//send vetor position grafo por grafo
+	//class navigation 
+
+		//definir entrega
+		//definir recojida
+		//trayectoria (inicial, final)
+		//score
+		//Comandos del camino
+		//print step by step 
+		
 }
 
 FText getValidMap()
 {
 	FText pathFileMap = "";
-
+	FText document = "";
 	//Check Valid Map
 	EMapStatus statusMap = EMapStatus::INVALID_STATUS; // status by default
 	do {
@@ -58,7 +72,7 @@ FText getValidMap()
 	
 		} while (statusPath != EMapStatus::OK);
 		
-		FString document = readText(pathFileMap);
+		document = readText(pathFileMap);
 		statusMap = BCNavigation.checkMapValidity(document);
 
 		switch (statusMap)
@@ -79,14 +93,14 @@ FText getValidMap()
 			std::cout << " !!Error!! The map does not contain a starting point or contains more than one";
 			break;
 		default:
-			std::cout << " Is Valid Map";
+			BCNavigation.setMapDocument(document);
+			std::cout << " Is Valid Map"<< std::endl;
 			break;
 		}
-
-		std::cout << std::endl << std::endl;
+		std::cout << std::endl;
 	} while (statusMap != EMapStatus :: OK);
-	std::cout << std::endl;
-	return FText();
+
+	return document;
 }
 
 FText readText(FText path)
@@ -116,3 +130,54 @@ bool askToRunSolutionAgain()
 	return (response[0] == 'Y' || response[0] == 'y') ? true : false;
 	return false;
 }
+
+void printInfoMap()
+{
+
+	MapInfo mapInfo = BCNavigation.getMapInfo();
+	std::cout << "BASE INFO" << std::endl;
+		std::cout << "  Count Cells: " << mapInfo.countCells << std::endl;
+		std::cout << "  Row size: " << mapInfo.rowSize <<  std::endl;
+		std::cout << "  Column Size: " << mapInfo.columnSize << std::endl;
+		std::cout << "  Count Empty: " << mapInfo.countEmpty << std::endl;
+		std::cout << "  Count Wall: " << mapInfo.countWall << std::endl;
+		std::cout << "  Count Package: " << mapInfo.countPackage << std::endl;
+		std::cout << "  Count Start: " << mapInfo.countStart << std::endl;
+		std::cout << "  Count Delivery: " << mapInfo.countDelivery << std::endl << std::endl;
+	
+	std::cout << "STAR POSITION" << std::endl;
+		std::cout << "  Pos : (" << BCNavigation.getStartPosition()[0] << "," << BCNavigation.getStartPosition()[1] << ")" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "POSITION DELIVERY" << std::endl;
+		for (auto deliveryPosition : BCNavigation.getPositionPointsDelivery()) {
+			std::cout << "  Pos : (" << deliveryPosition[0] << "," << deliveryPosition[1] <<")"<< std::endl;
+		}
+	std::cout << std::endl;
+
+	std::cout << "POSITION PACKAGE" << std::endl;
+		for (auto packagePosition : BCNavigation.getPositionPackage()) {
+			std::cout << "  Pos : (" << packagePosition[0] << "," << packagePosition[1] << ")" << std::endl;
+		}
+	std::cout << std::endl;
+
+	//std::cout << std::get<0>(BCNavigation.positionPackage[1]) << std::endl; */
+}
+
+void printInfoNavigationMap(Matriz navigationMap)
+{
+	std::cout << "Navigation Map" << std::endl;
+	for (auto row : navigationMap) {
+		for (auto cell : row) {
+			int sizeCell = std::to_string(cell).length();
+			FText space = "";
+			for (int i = 0 ; i<8-sizeCell; i++) {
+				space = space + " ";
+			}
+			std::cout<< space << cell;
+		}
+		std::cout << std::endl;
+	}
+	std::cout << std::endl;
+}
+

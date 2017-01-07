@@ -8,24 +8,34 @@
 #include <sstream>
 #include <map>
 #include <algorithm>
+#include <iterator>
+#include <array>
+
 
 #define TMap std::map
 
 using FString = std::string;
 using int32 = int;
-
+using VectorPos2D = std::array<double, 2>;
+using ArrayList = std::vector<VectorPos2D>;
+using Matriz = std::vector<std::vector<int>>;
 
 struct MapInfo
 {
-	int32 cells = 0;
-	int32 rows = 0;
-	int32 column = 0;
-	int32 empty = 0;
-	int32 wall = 0;
-	int32 package = 0;
-	int32 start = 0;
-	int32 delivery = 0;
+	//map info
+	int32 countCells = 0;
+	int32 rowSize = 0;
+	int32 columnSize = 0;
+
+	//cells info
+	int32 countEmpty = 0;
+	int32 countWall = 0;
+	int32 countPackage = 0;
+	int32 countStart = 0;
+	int32 countDelivery = 0;
 };
+
+
 
 enum class EMapStatus {
 	OK,
@@ -45,11 +55,30 @@ class FNavigationRobot
 public:
 	//Constructor
 	FNavigationRobot();
+
 	EMapStatus checkMapValidity(FString) const;
 	EMapStatus checkPathValidity(FString) const;
+	MapInfo getMapInfo() const;
+	VectorPos2D getStartPosition() const;
+	ArrayList getPositionPackage() const;
+	ArrayList getPositionPointsDelivery() const;
 
+	void reset();
+	void setMapDocument(FString);
+	Matriz builderNavMap(); // get Matriz wall 
+						  // set properties
+						 // set points package 
+						// set points delivery
+	
 private:
-	FString map;
+	VectorPos2D startPosition;
+	ArrayList positionPackage;//add reset
+	ArrayList positionPointsDelivery; //add reset
+
+	ArrayList PointsOfDestination; //sorted list by destination points
+
+	FString mapDocument;
+	MapInfo mapInfo;
 	TMap <char, bool> validCharacters;//List Character Valid
 
 	bool isLengthValid(FString) const;
@@ -59,4 +88,6 @@ private:
 	bool isContainDelivery(FString )const;
 	bool isValidStart(FString) const;
 	bool isContainPackage(FString) const;
+
+	void clearInfo();
 };

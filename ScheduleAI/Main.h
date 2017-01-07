@@ -3,12 +3,19 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <iterator>
+#include <algorithm>
+#include <array>
+
 #include "FNavigationRobot.h"
 
 using FText = std::string;
 using int32 = int;
+using FVectorPos2D = std::array<int, 2>;
+using FArrayList = std::vector<FVectorPos2D>;
+using FMatriz = std::vector<std::vector<int>>;
 
-using FText = std::string;
+int32 main();
 
 void welcomeGame();
 
@@ -19,3 +26,7 @@ FText getValidMap();
 FText readText(FText);
 
 bool askToRunSolutionAgain();
+
+void printInfoMap();
+
+void printInfoNavigationMap(Matriz);
