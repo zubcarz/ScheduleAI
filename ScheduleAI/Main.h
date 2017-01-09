@@ -8,6 +8,7 @@
 #include <array>
 
 #include "FNavigationRobot.h"
+#include "FPathFindingA.h"
 
 using FText = std::string;
 using int32 = int;
@@ -30,3 +31,5 @@ bool askToRunSolutionAgain();
 void printInfoMap();
 
 void printInfoNavigationMap(Matriz);
+
+bool askToShowStepBystep();

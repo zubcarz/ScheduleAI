@@ -35,8 +35,6 @@ struct MapInfo
 	int32 countDelivery = 0;
 };
 
-
-
 enum class EMapStatus {
 	OK,
 	INVALID_PATH,//Path Valid

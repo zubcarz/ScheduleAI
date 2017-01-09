@@ -25,14 +25,19 @@ void welcomeGame()
 void playSolution()
 {
 	//Cycle
+	//create grafo
+	//send vetor position grafo por grafo
 	FText validMap =  getValidMap();
 	FMatriz navigationMap = BCNavigation.builderNavMap();
 	printInfoMap();
 	printInfoNavigationMap(navigationMap);
-	//create grafo
-	//send vetor position grafo por grafo
-	//class navigation 
 
+	FPathFindingA BCPathFinder(navigationMap, BCNavigation.getMapInfo().rowSize, BCNavigation.getMapInfo().columnSize);
+	bool isShowStepByStep = askToShowStepBystep();
+	bool hasLoad = false;
+	BCPathFinder.moveTo(BCNavigation.getStartPosition(),BCNavigation.getPositionPackage()[0], hasLoad,isShowStepByStep);
+
+	//class navigation 
 		//definir entrega
 		//definir recojida
 		//trayectoria (inicial, final)
@@ -128,7 +133,6 @@ bool askToRunSolutionAgain()
 	FText response = "";
 	getline(std::cin, response);
 	return (response[0] == 'Y' || response[0] == 'y') ? true : false;
-	return false;
 }
 
 void printInfoMap()
@@ -167,17 +171,35 @@ void printInfoMap()
 void printInfoNavigationMap(Matriz navigationMap)
 {
 	std::cout << "Navigation Map" << std::endl;
+	int countRow = 0;
 	for (auto row : navigationMap) {
+		int countColumn = 0;
 		for (auto cell : row) {
 			int sizeCell = std::to_string(cell).length();
 			FText space = "";
 			for (int i = 0 ; i<8-sizeCell; i++) {
 				space = space + " ";
 			}
-			std::cout<< space << cell;
+			std::cout << space;
+			if (BCNavigation.getStartPosition()[0] == countRow && BCNavigation.getStartPosition()[1] == countColumn) {
+				std::cout << "S" ;
+			}
+			else {
+				std::cout << cell;
+			}
+			
+			countColumn++;
 		}
+		countRow++;
 		std::cout << std::endl;
 	}
 	std::cout << std::endl;
 }
 
+bool askToShowStepBystep()
+{
+	std::cout << " Do You want to see step by step ? Y/N : ";
+	FText response = "";
+	getline(std::cin, response);
+	return (response[0] == 'Y' || response[0] == 'y') ? true : false;
+}

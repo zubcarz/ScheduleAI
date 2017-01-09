@@ -102,7 +102,7 @@ Matriz FNavigationRobot::builderNavMap()
 				VectorPos2D cellPosition = { countPosRow,countPosColumn };
 
 				if (letter == 'X') {
-					rowNav.push_back(1000);
+					rowNav.push_back(100000);
 				}
 				else {
 					rowNav.push_back(0);
@@ -110,8 +110,7 @@ Matriz FNavigationRobot::builderNavMap()
 
 				switch (letter)
 				{
-					case 'o':
-					
+					case 'o':	
 						mapInfo.countEmpty++;
 						break;
 					case 'S':
