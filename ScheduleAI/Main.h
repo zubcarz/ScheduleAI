@@ -1,5 +1,6 @@
 #pragma once
 
+#include <windows.h>
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -32,4 +33,8 @@ void printInfoMap();
 
 void printInfoNavigationMap(Matriz);
 
+void outputFile(FString, int);
+
 bool askToShowStepBystep();
+
+FText ExePath();

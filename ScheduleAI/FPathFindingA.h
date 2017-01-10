@@ -27,6 +27,8 @@ class FPathFindingA
 {
 	public: 
 		FPathFindingA();
+		int getMoves() const;
+
 		FPathFindingA(Matriz,int,int);
 		FString moveTo(VectorPos2D, VectorPos2D, bool, bool);
 		void printNavigationMap(VectorPos2D, VectorPos2D);

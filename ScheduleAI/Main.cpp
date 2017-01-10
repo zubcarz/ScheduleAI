@@ -38,8 +38,9 @@ void playSolution()
 	FPathFindingA BCPathFinder(navigationMap, BCNavigation.getMapInfo().rowSize, BCNavigation.getMapInfo().columnSize);
 	bool isShowStepByStep = askToShowStepBystep();
 	bool hasLoad = false;
-	BCPathFinder.moveTo(BCNavigation.getStartPosition(),BCNavigation.getPositionPackage()[0], hasLoad,isShowStepByStep);
-
+	FString commands = BCPathFinder.moveTo(BCNavigation.getStartPosition(),BCNavigation.getPositionPackage()[0], hasLoad,isShowStepByStep);
+	int moves = BCPathFinder.getMoves();
+	outputFile(commands, moves);
 	//class navigation 
 		//definir entrega
 		//definir recojida
@@ -205,4 +206,25 @@ bool askToShowStepBystep()
 	FText response = "";
 	getline(std::cin, response);
 	return (response[0] == 'Y' || response[0] == 'y') ? true : false;
+}
+
+void outputFile(FString commands, int moves)
+{
+	std :: ofstream file("solution.txt");
+	file << "Solution commands : " << commands << std::endl;
+	file << "Score : " << 0 << std::endl;
+	file << "Moves Cell: " << moves << std::endl;
+	file << "Moves Robot: " << commands.length() << std::endl;
+	file.close();
+
+	std::cout << "BUILDER SOLUTION IN : " << ExePath() << "\\solution.txt" << std::endl;
+
+}
+
+
+FText ExePath()
+{
+	char working_directory[MAX_PATH + 1];
+	GetCurrentDirectoryA(sizeof(working_directory), working_directory); // **** win32 specific ****
+	return working_directory;
 }

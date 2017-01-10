@@ -6,6 +6,8 @@ FPathFindingA::FPathFindingA()
 	reset();
 }
 
+int FPathFindingA::getMoves() const { return currentMoves;}
+
 FPathFindingA::FPathFindingA(Matriz mapNavigation, int numberofRow, int numberOfColumn)
 {
 	reset();
