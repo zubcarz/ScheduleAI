@@ -29,6 +29,9 @@ void playSolution()
 	//send vetor position grafo por grafo
 	FText validMap =  getValidMap();
 	FMatriz navigationMap = BCNavigation.builderNavMap();
+
+	BCNavigation.getDestinations();
+
 	printInfoMap();
 	printInfoNavigationMap(navigationMap);
 

@@ -29,7 +29,7 @@ class FPathFindingA
 		FPathFindingA();
 		FPathFindingA(Matriz,int,int);
 		FString moveTo(VectorPos2D, VectorPos2D, bool, bool);
-		void printNavigationMap(VectorPos2D);
+		void printNavigationMap(VectorPos2D, VectorPos2D);
 		void printArrayList(FString message, ArrayList list);
 		bool isFinishMoves();
 		void reset();
@@ -49,6 +49,7 @@ class FPathFindingA
 
 		TMap <FString, VectorPos2D> posCheckPosition;//List Character Valid
 		TMap <FString, FString> movesValid;
+
 
 		int getDistance(VectorPos2D) const;
 		FString builderCommand(ArrayList,bool);

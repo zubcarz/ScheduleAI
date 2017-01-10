@@ -12,7 +12,7 @@ FNavigationRobot::FNavigationRobot()
 MapInfo FNavigationRobot::getMapInfo() const{return mapInfo;}
 VectorPos2D FNavigationRobot::getStartPosition() const{return startPosition;}
 ArrayList FNavigationRobot::getPositionPackage() const{return positionPackage;}
-ArrayList FNavigationRobot::getPositionPointsDelivery() const{return positionPackage;}
+ArrayList FNavigationRobot::getPositionPointsDelivery() const{return positionPointsDelivery;}
 
 
 EMapStatus FNavigationRobot::checkMapValidity(FString mapDocument) const
@@ -64,6 +64,9 @@ void FNavigationRobot::reset()
 	mapDocument = "";
 	
 	clearInfo();
+
+	positionPackage.clear();
+	positionPointsDelivery.clear();
 
 	validCharacters['o'] = true;// Empty
 	validCharacters['S'] = true;// Start
@@ -136,6 +139,7 @@ Matriz FNavigationRobot::builderNavMap()
 			mapNav.push_back(rowNav);
 			countPosRow++;
 		 } while (getline(map, row, ','));
+		 navigationMap = mapNav;
 		 return mapNav;
 	}
 	return Matriz();
@@ -178,7 +182,6 @@ bool FNavigationRobot::isLengthValid(FString mapDocument) const
 	}
 	return true;
 }
-
 
 bool FNavigationRobot::isValidExtencion(FString pathFile) const
 {
@@ -230,4 +233,105 @@ void FNavigationRobot::clearInfo()
 	mapInfo.countPackage = 0;
 	mapInfo.countStart = 0;
 	mapInfo.countDelivery = 0;
+}
+
+void FNavigationRobot::sortPointsDelivery()
+{
+	ArrayList sortDelivery;
+	ArrayList snapshotPositionDeliverity = positionPointsDelivery;
+		
+	do {
+		int minorRegister;
+		int minorDistance = pow(10, 7);
+		for (int i = 0; i < snapshotPositionDeliverity.size(); i++) {
+			int distance = getDistanceDocument(snapshotPositionDeliverity[i], startPosition);
+				//abs(snapshotPositionDeliverity[i][1] - startPosition[1]) + abs(snapshotPositionDeliverity[i][0] - startPosition[0]);
+			if (distance < minorDistance) {
+				minorDistance = distance;
+				minorRegister = i;
+			}
+		}
+		sortDelivery.push_back(snapshotPositionDeliverity[minorRegister]);
+
+		snapshotPositionDeliverity.erase(snapshotPositionDeliverity.begin()+ (minorRegister));
+
+	} while (snapshotPositionDeliverity.size() != 0);
+
+	positionPointsDelivery = sortDelivery;
+}
+
+void FNavigationRobot::sortPointsPackage()
+{
+	ArrayList sortPackage;
+	ArrayList snapshotPackage = positionPackage;
+
+	do {
+		int minorRegister;
+		int minorDistance = pow(10, 7);
+		for (int i = 0; i < snapshotPackage.size(); i++) {
+			int distance = pow(10,7);
+
+			for (auto item : positionPointsDelivery) {
+				int distanceToDelivery = getDistanceDocument(snapshotPackage[i], item);
+					//abs(snapshotPackage[i][1] - item[1]) + abs(snapshotPackage[i][0] - item[0]);
+				if (distanceToDelivery < distance) {
+					distance = distanceToDelivery;
+				}
+			}
+
+			if (distance < minorDistance) {
+				minorDistance = distance;
+				minorRegister = i;
+			}
+		}
+		sortPackage.push_back(snapshotPackage[minorRegister]);
+
+		snapshotPackage.erase(snapshotPackage.begin() + (minorRegister));
+
+	} while (snapshotPackage.size() != 0);
+
+	positionPackage = sortPackage;
+}
+
+int FNavigationRobot::getDistanceDocument(VectorPos2D startPosition, VectorPos2D goalPosition)
+{
+	/*std::cout << "enter problem" << std::endl;
+	std::cout << "start " <<"("<< startPosition[0] <<","<< startPosition[1] <<")"<<std::endl;
+	std::cout << "goal" << "(" << goalPosition[0] << "," << goalPosition[1] << ")" << std::endl;*/
+
+	int distance = 0;
+	if (startPosition[0] != goalPosition[0]) {
+		int moveX = startPosition[0];
+		do {
+			distance = distance + navigationMap[moveX][startPosition[1]] + 1;
+			if (startPosition[0] < goalPosition[0]) {
+				moveX++;
+			}
+			else {
+				moveX--;
+			}
+		} while (moveX != goalPosition[0]);
+	}
+
+	if (startPosition[1] != goalPosition[1]) {
+		int moveY = startPosition[1];
+		do {
+			distance = distance + navigationMap[goalPosition[0]][moveY] + 1 ;
+			if (startPosition[1] < goalPosition[1]) {
+				moveY++;
+			}
+			else {
+				moveY--;
+			}
+		} while (moveY != goalPosition[1]);
+	}
+	distance = distance - (navigationMap[startPosition[0]][goalPosition[1]]);
+	std::cout << "Distance :" << distance << std::endl;
+	return distance;
+}
+
+void FNavigationRobot::getDestinations()
+{
+	sortPointsDelivery();
+	sortPointsPackage();
 }

@@ -63,16 +63,17 @@ public:
 
 	void reset();
 	void setMapDocument(FString);
+	void getDestinations();
 	Matriz builderNavMap(); // get Matriz wall 
 						  // set properties
 						 // set points package 
 						// set points delivery
-	
+
 private:
 	VectorPos2D startPosition;
-	ArrayList positionPackage;//add reset
-	ArrayList positionPointsDelivery; //add reset
-
+	ArrayList positionPackage;
+	ArrayList positionPointsDelivery;
+	Matriz navigationMap;
 	ArrayList PointsOfDestination; //sorted list by destination points
 
 	FString mapDocument;
@@ -83,9 +84,12 @@ private:
 	bool isValidExtencion(FString) const;
 	bool isPathFile(FString) const;
 	bool isValidFormatMap(FString) const;
-	bool isContainDelivery(FString )const;
+	bool isContainDelivery(FString)const;
 	bool isValidStart(FString) const;
 	bool isContainPackage(FString) const;
 
 	void clearInfo();
+	void sortPointsDelivery(); //sort distance to start
+	void sortPointsPackage();  //sort distance to delivery point
+	int getDistanceDocument(VectorPos2D, VectorPos2D);
 };

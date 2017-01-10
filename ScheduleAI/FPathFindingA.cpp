@@ -66,7 +66,7 @@ FString FPathFindingA::moveTo(VectorPos2D posStart, VectorPos2D posEnd, bool has
 		std::cout << "Current Position : "<< "(" << currentPosition[0] << "," << currentPosition[1] << ")" << std::endl;
 
 		if (isShowStepByStep) {
-			printNavigationMap(currentPosition);
+			printNavigationMap(currentPosition, posEnd);
 			_sleep(500); //deley 0.5 second
 		}
 		solutionNavigation.push_back(currentPosition);
@@ -81,7 +81,7 @@ FString FPathFindingA::moveTo(VectorPos2D posStart, VectorPos2D posEnd, bool has
 	return commandsNavigation;
 }
 
-void FPathFindingA::printNavigationMap(VectorPos2D currentPosition)
+void FPathFindingA::printNavigationMap(VectorPos2D currentPosition, VectorPos2D goalPosition)
 {
 	
     std::cout << "Navigation Map" << std::endl;
@@ -101,6 +101,10 @@ void FPathFindingA::printNavigationMap(VectorPos2D currentPosition)
 			else if (countRow == currentPosition[0] && countColumn == currentPosition[1]){
 				std::cout << "       ";
 				std::cout << "C"; //Position Robot
+			}
+			else if (goalPosition[0] == countRow && goalPosition[1] == countColumn) {
+				std::cout << "       ";
+				std::cout << "G";//Goal position
 			}
 			else {
 				std::cout << space;
@@ -165,7 +169,7 @@ FString FPathFindingA::builderCommand(ArrayList solutionNavigation, bool hasLoad
 	std::cout << "# iter : " << solutionNavigation.size() << std::endl;
 	FString commands = "";
 
-	for (int i = 0; i < solutionNavigation.size() - 1 ; i++) {
+	for (int i = 0; i < (solutionNavigation.size() - 1) ; i++) {
 		
 		int nextAngle = getNextAngle(solutionNavigation[i], solutionNavigation[i + 1]);
 
@@ -189,9 +193,9 @@ FString FPathFindingA::builderCommand(ArrayList solutionNavigation, bool hasLoad
 			}
 		}
 		else {
-			if (i <= solutionNavigation.size() - 2) {
+			if (i < (solutionNavigation.size() - 2)) {
 				int nextNextAngle = getNextAngle(solutionNavigation[i+1], solutionNavigation[i + 2]);
-				std::cout << "current  : " << currentAngle << " Next : " << nextAngle << " NextNext : "<< nextNextAngle <<std::endl;
+				//std::cout << "current  : " << currentAngle << " Next : " << nextAngle << " NextNext : "<< nextNextAngle <<std::endl;
 
 				if (currentAngle == nextAngle && currentAngle == nextNextAngle) {
 					commands = commands + movesValid["AvanceTwice"];
@@ -206,7 +210,7 @@ FString FPathFindingA::builderCommand(ArrayList solutionNavigation, bool hasLoad
 				}
 			}
 		}
-		
+		std::cout << "Commands Step By Step : " << commands << std::endl;
 	}
 	std::cout << "Commands : " << commands << std::endl;
 	return commands;
