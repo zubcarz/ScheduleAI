@@ -30,25 +30,27 @@ void playSolution()
 	FText validMap =  getValidMap();
 	FMatriz navigationMap = BCNavigation.builderNavMap();
 
-	BCNavigation.getDestinations();
-
-	printInfoMap();
+	ArrayList route = BCNavigation.getDestinations();
+	printInfoMap(route);
 	printInfoNavigationMap(navigationMap);
-
+	
 	FPathFindingA BCPathFinder(navigationMap, BCNavigation.getMapInfo().rowSize, BCNavigation.getMapInfo().columnSize);
-	bool isShowStepByStep = askToShowStepBystep();
-	bool hasLoad = false;
-	FString commands = BCPathFinder.moveTo(BCNavigation.getStartPosition(),BCNavigation.getPositionPackage()[0], hasLoad,isShowStepByStep);
+	FText outputCommands = "";
+	VectorPos2D currentPosition = BCNavigation.getStartPosition();
+
+	for (auto next: route) {
+		bool isShowStepByStep = askToShowStepBystep();
+		bool hasLoad = false;
+		outputCommands = outputCommands + BCPathFinder.moveTo(currentPosition, next, hasLoad, isShowStepByStep);
+		currentPosition = next;
+	}
+
 	int moves = BCPathFinder.getMoves();
-	outputFile(commands, moves);
-	//class navigation 
+	outputFile(outputCommands, moves);
+
 		//definir entrega
 		//definir recojida
-		//trayectoria (inicial, final)
 		//score
-		//Comandos del camino
-		//print step by step 
-		
 }
 
 FText getValidMap()
@@ -139,7 +141,7 @@ bool askToRunSolutionAgain()
 	return (response[0] == 'Y' || response[0] == 'y') ? true : false;
 }
 
-void printInfoMap()
+void printInfoMap(ArrayList route)
 {
 
 	MapInfo mapInfo = BCNavigation.getMapInfo();
@@ -167,6 +169,12 @@ void printInfoMap()
 		for (auto packagePosition : BCNavigation.getPositionPackage()) {
 			std::cout << "  Pos : (" << packagePosition[0] << "," << packagePosition[1] << ")" << std::endl;
 		}
+	std::cout << std::endl;
+
+	std::cout << "ROUTE" << std::endl;
+	for (auto cell : route) {
+		std::cout << "  Pos : (" << cell[0] << "," << cell[1] << ")" << std::endl;
+	}
 	std::cout << std::endl;
 
 	//std::cout << std::get<0>(BCNavigation.positionPackage[1]) << std::endl; */

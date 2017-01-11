@@ -56,7 +56,6 @@ class FPathFindingA
 		int getDistance(VectorPos2D) const;
 		FString builderCommand(ArrayList,bool);
 		int getNextAngle(VectorPos2D, VectorPos2D);
-		bool isRigthDirection() const;
 		void printKeyofMap(TMap <FString, VectorPos2D>) const;
 
 		TMap <FString, VectorPos2D> validPositiontoEvaluate(VectorPos2D, FString);

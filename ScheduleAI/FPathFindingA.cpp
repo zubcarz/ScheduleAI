@@ -25,14 +25,6 @@ FString FPathFindingA::moveTo(VectorPos2D posStart, VectorPos2D posEnd, bool has
 	this->posEnd = posEnd;
 	FString commandsNavigation;
 
-	/*bool isRigth = isRigthDirection();
-	if (isRigth) {
-		posCheckPosition.erase("West");
-	}
-	else {
-		posCheckPosition.erase("East");
-	}*/
-
 	VectorPos2D currentPosition = posStart;
 	ArrayList solutionNavigation;
 	solutionNavigation.push_back(posStart);
@@ -233,15 +225,6 @@ int FPathFindingA::getNextAngle(VectorPos2D posStart, VectorPos2D posEnd)
 
 	std::cout << "angle : " << nextAngle << std::endl;
 	return nextAngle;
-}
-
-bool FPathFindingA::isRigthDirection() const
-{
-	//Compare y Axis
-	if (posStart[1] < posEnd[1]) {
-		return true;
-	}
-	return false;
 }
 
 TMap<FString, VectorPos2D> FPathFindingA::validPositiontoEvaluate(VectorPos2D posToEvaluate, FString previousDirection)

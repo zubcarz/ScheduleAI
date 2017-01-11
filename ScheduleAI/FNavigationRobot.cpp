@@ -267,15 +267,17 @@ void FNavigationRobot::sortPointsPackage()
 
 	do {
 		int minorRegister;
-		int minorDistance = pow(10, 7);
-		for (int i = 0; i < snapshotPackage.size(); i++) {
-			int distance = pow(10,7);
+		int minorDistance = pow(10, 8);
+		int deliveryTo;
+		int distance = pow(10, 8);
 
-			for (auto item : positionPointsDelivery) {
-				int distanceToDelivery = getDistanceDocument(snapshotPackage[i], item);
-					//abs(snapshotPackage[i][1] - item[1]) + abs(snapshotPackage[i][0] - item[0]);
+		for (int i = 0; i < snapshotPackage.size(); i++) {
+			for (int j = 0; j < positionPointsDelivery.size(); j++) {
+				int distanceToDelivery = getDistanceDocument(snapshotPackage[i], positionPointsDelivery[j]);
+
 				if (distanceToDelivery < distance) {
-					distance = distanceToDelivery;
+ 					distance = distanceToDelivery;
+					deliveryTo = j;
 				}
 			}
 
@@ -284,54 +286,134 @@ void FNavigationRobot::sortPointsPackage()
 				minorRegister = i;
 			}
 		}
+		
 		sortPackage.push_back(snapshotPackage[minorRegister]);
+
+		std::cout << "POINT CLOSE TO DELIVERY" << std::endl;
+		std::cout << "Send From : " << sortPackage.size() - 1 
+			      << " (" << snapshotPackage[minorRegister][0] << ","<< snapshotPackage[minorRegister][1] <<")"
+				  << ", Distance :" << minorDistance 
+				  << ", Send To ->" << deliveryTo << std::endl;
+
+		deliveryAssignment.push_back(deliveryTo);
+		distanceToDelivery.push_back(minorDistance);
 
 		snapshotPackage.erase(snapshotPackage.begin() + (minorRegister));
 
 	} while (snapshotPackage.size() != 0);
+	std::cout << std::endl;
 
 	positionPackage = sortPackage;
 }
 
 int FNavigationRobot::getDistanceDocument(VectorPos2D startPosition, VectorPos2D goalPosition)
 {
-	/*std::cout << "enter problem" << std::endl;
-	std::cout << "start " <<"("<< startPosition[0] <<","<< startPosition[1] <<")"<<std::endl;
-	std::cout << "goal" << "(" << goalPosition[0] << "," << goalPosition[1] << ")" << std::endl;*/
-
 	int distance = 0;
+
+	int distanceYElbowUp = 0;
+	int distanceYElbowDown = 0;
+	int distanceXElbowUp = 0;
+	int distanceXElbowDown = 0;
+	int distanceElbowDown = 0;
+	int distanceElbowUp= 0;
+
 	if (startPosition[0] != goalPosition[0]) {
-		int moveX = startPosition[0];
+		int moveXU = startPosition[0];
 		do {
-			distance = distance + navigationMap[moveX][startPosition[1]] + 1;
+			distanceYElbowUp = distanceYElbowUp + navigationMap[moveXU][startPosition[1]] + 1;
 			if (startPosition[0] < goalPosition[0]) {
-				moveX++;
+				moveXU++;
 			}
 			else {
-				moveX--;
+				moveXU--;
 			}
-		} while (moveX != goalPosition[0]);
+		} while (moveXU != goalPosition[0]);
+
+		int moveXD = startPosition[0];
+		do {
+			distanceYElbowDown = distanceYElbowDown + navigationMap[moveXD][goalPosition[1]] + 1;
+			if (startPosition[0] < goalPosition[0]) {
+				moveXD++;
+			}
+			else {
+				moveXD--;
+			}
+		} while (moveXD != goalPosition[0]);
 	}
 
 	if (startPosition[1] != goalPosition[1]) {
-		int moveY = startPosition[1];
+		int moveYU = startPosition[1];
+		int moveYD = startPosition[1];
+
 		do {
-			distance = distance + navigationMap[goalPosition[0]][moveY] + 1 ;
+			distanceXElbowUp = distanceXElbowUp + navigationMap[goalPosition[0]][moveYU] + 1 ;
 			if (startPosition[1] < goalPosition[1]) {
-				moveY++;
+				moveYU++;
 			}
 			else {
-				moveY--;
+				moveYU--;
 			}
-		} while (moveY != goalPosition[1]);
+		} while (moveYU != goalPosition[1]);
+
+		do {
+			distanceXElbowDown = distanceXElbowDown + navigationMap[startPosition[0]][moveYD] + 1;
+			if (startPosition[1] < goalPosition[1]) {
+				moveYD++;
+			}
+			else {
+				moveYD--;
+			}
+		} while (moveYD != goalPosition[1]);
 	}
-	distance = distance - (navigationMap[startPosition[0]][goalPosition[1]]);
-	std::cout << "Distance :" << distance << std::endl;
+
+	distanceElbowUp = distanceYElbowUp + distanceXElbowUp;
+	distanceElbowDown = distanceYElbowDown + distanceXElbowDown;
+
+	if (distanceElbowDown < distanceElbowUp) {
+		distance = distanceElbowDown - navigationMap[startPosition[0]][goalPosition[1]];
+	}
+	else {
+		distance = distanceElbowUp - navigationMap[goalPosition[0]][startPosition[1]];
+	}
+
 	return distance;
 }
 
-void FNavigationRobot::getDestinations()
+int FNavigationRobot::getAssignment()
 {
+	return 0;
+}
+
+ArrayList FNavigationRobot::getDestinations()
+{
+	pointsOfDestination.clear();
+
 	sortPointsDelivery();
 	sortPointsPackage();
+
+	/*ArrayList positionPackage;
+	ArrayList positionPointsDelivery;
+	Matriz navigationMap;
+	ArrayList PointsOfDestination;
+	std::vector<int> deliveryAssignment;
+	std::vector<int> valueAssignment;
+	std::vector<int> distanceToDelivery;*/
+	/*
+	for (int i = 0; i < positionPackage.size(); i++) {
+		pointsOfDestination.push_back(positionPackage[i]);
+		pointsOfDestination.push_back(positionPointsDelivery[deliveryAssignment[i]]);
+	}*/
+
+	for (int i = 0; i < positionPointsDelivery.size(); i++) {
+		for (int j = 0; j < positionPackage.size(); j++) {
+			if (deliveryAssignment[i] == i) {
+				pointsOfDestination.push_back(positionPackage[j]);
+				pointsOfDestination.push_back(positionPackage[i]);
+			}
+		}
+
+	}
+	
+
+	return pointsOfDestination;
 }

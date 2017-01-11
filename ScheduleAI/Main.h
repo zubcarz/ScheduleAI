@@ -29,7 +29,7 @@ FText readText(FText);
 
 bool askToRunSolutionAgain();
 
-void printInfoMap();
+void printInfoMap(ArrayList);
 
 void printInfoNavigationMap(Matriz);
 

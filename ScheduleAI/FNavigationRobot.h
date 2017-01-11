@@ -63,18 +63,18 @@ public:
 
 	void reset();
 	void setMapDocument(FString);
-	void getDestinations();
-	Matriz builderNavMap(); // get Matriz wall 
-						  // set properties
-						 // set points package 
-						// set points delivery
+	ArrayList getDestinations();
+	Matriz builderNavMap(); 
 
 private:
 	VectorPos2D startPosition;
 	ArrayList positionPackage;
 	ArrayList positionPointsDelivery;
 	Matriz navigationMap;
-	ArrayList PointsOfDestination; //sorted list by destination points
+	ArrayList pointsOfDestination; 
+	std::vector<int> deliveryAssignment;
+	std::vector<int> valueAssignment;
+	std::vector<int> distanceToDelivery;
 
 	FString mapDocument;
 	MapInfo mapInfo;
@@ -92,4 +92,5 @@ private:
 	void sortPointsDelivery(); //sort distance to start
 	void sortPointsPackage();  //sort distance to delivery point
 	int getDistanceDocument(VectorPos2D, VectorPos2D);
+	int getAssignment();
 };
